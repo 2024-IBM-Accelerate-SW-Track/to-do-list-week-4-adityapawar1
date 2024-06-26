@@ -1,6 +1,6 @@
-import { render, screen } from '@testing-library/react';
-import { unmountComponentAtNode } from 'react-dom';
-import App from './App';
+import { render, screen } from "@testing-library/react";
+import { unmountComponentAtNode } from "react-dom";
+import App from "./App";
 
 let container = null;
 beforeEach(() => {
@@ -16,6 +16,6 @@ afterEach(() => {
   container = null;
 });
 
-test('test that App component renders', () => {
+test("test that App component renders", () => {
   render(<App />, container);
- });
+});

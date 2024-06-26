@@ -1,3 +1,4 @@
+import Axios from "axios";
 import React, { Component } from "react";
 import Todos from "../component/todos";
 import AddTodo from "../component/AddTodo";
@@ -20,6 +21,19 @@ class Home extends Component {
     const todos = this.state.todos.filter((todo) => {
       return todo.id !== id;
     });
+
+    Axios({
+      method: "POST",
+      url: "http://localhost:8000/delete/item",
+      data: { taskId: id },
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Content-Type": "application/json",
+      },
+    }).then((res) => {
+      console.log(res.data.message);
+    });
+
     this.setState({
       todos: todos,
     });
@@ -28,15 +42,36 @@ class Home extends Component {
   // the addTodo function simply creates a new array that includes the user submitted todo item and then
   // updates the state with the new list.
   addTodo = (todo) => {
-    const exists = this.state.todos.find(t => t.content === todo.content);
-    if (exists || todo.duedate == null || todo.duedate === "Invalid Date"){ return }
+    const exists = this.state.todos.find((t) => t.content === todo.content);
+    if (exists || todo.duedate == null || todo.duedate === "Invalid Date") {
+      return;
+    }
     // In React, keys or ids in a list help identify which items have changed, been added or removed. Keys
     // should not share duplicate values.
     // To avoid having dup values, we use the Math.random() function to generate a random value for a todo id.
     // This solution works for a small application but a more complex hashing function should be used when
     // dealing with a larger data sensitive project.
-    todo.id = Math.random();
+    todo.id = Math.round(Math.random() * 10000);
     // Create a array that contains the current array and the new todo item
+    const payload = {
+      taskId: todo.id,
+      task: todo.content,
+      currentDate: todo.date,
+      dueDate: todo.duedate,
+    };
+
+    Axios({
+      method: "POST",
+      url: "http://localhost:8000/add/item",
+      data: payload,
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Content-Type": "application/json",
+      },
+    }).then((res) => {
+      console.log(res.data.message);
+    });
+
     let new_list = [...this.state.todos, todo];
     // Update the local state with the new array.
     this.setState({
